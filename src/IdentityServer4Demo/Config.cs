@@ -1,4 +1,5 @@
-﻿using IdentityServer4.Models;
+﻿using IdentityServer4;
+using IdentityServer4.Models;
 using System.Collections.Generic;
 
 namespace IdentityServer4Demo
@@ -31,7 +32,9 @@ namespace IdentityServer4Demo
                 
                 // policyserver
                 new ApiScope("policyserver.runtime"),
-                new ApiScope("policyserver.management")
+                new ApiScope("policyserver.management"),
+
+                new ApiScope(IdentityServerConstants.LocalApi.ScopeName)
             };
         }
         
@@ -44,7 +47,8 @@ namespace IdentityServer4Demo
                     ApiSecrets = { new Secret("secret".Sha256()) },
                     
                     Scopes = { "api", "api.scope1", "api.scope2" }
-                }
+                },
+                new ApiResource(IdentityServerConstants.LocalApi.ScopeName)
             };
         }
 
@@ -58,9 +62,16 @@ namespace IdentityServer4Demo
                     ClientId = "m2m",
                     ClientName = "Machine to machine (client credentials)",
                     ClientSecrets = { new Secret("secret".Sha256()) },
-
+                    AccessTokenType = AccessTokenType.Reference,
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
-                    AllowedScopes = { "api", "api.scope1", "api.scope2", "scope2", "policyserver.runtime", "policyserver.management" },
+                    AllowedScopes = {
+                        "api",
+                        "api.scope1",
+                        "api.scope2", "scope2",
+                        "policyserver.runtime",
+                        "policyserver.management",
+                        IdentityServerConstants.LocalApi.ScopeName
+                    },
                 },
                 new Client
                 {
